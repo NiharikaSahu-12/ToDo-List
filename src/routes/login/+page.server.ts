@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  default: async ({ request, locals }) => {
+  login: async ({ request, locals }) => {
     const formData = await request.formData();
     const parsed = loginSchema.safeParse({
       email: formData.get("email"),
@@ -27,11 +27,13 @@ export const actions: Actions = {
       email,
       password,
     });
-    if (error)
+    if (error) {
+      console.error("Supabase sign-in failed:", error);
       return fail(400, {
         message: "Email or password was not accepted.",
         email,
       });
+    }
     redirect(303, "/app");
   },
   google: async ({ locals, url }) => {
@@ -44,8 +46,13 @@ export const actions: Actions = {
       options: { redirectTo },
     });
 
-    if (error || !data.url)
+    if (error || !data.url) {
+      console.error(
+        "Supabase Google sign-in failed:",
+        error ?? "No OAuth URL returned.",
+      );
       return fail(500, { message: "Google sign-in could not be started." });
+    }
     redirect(303, data.url);
   },
 };

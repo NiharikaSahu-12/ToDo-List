@@ -4,7 +4,7 @@ import { env } from "$env/dynamic/public";
 import { signupSchema } from "$lib/schemas/auth";
 
 export const actions: Actions = {
-  default: async ({ request, locals, url }) => {
+  signup: async ({ request, locals, url }) => {
     const formData = await request.formData();
     const parsed = signupSchema.safeParse({
       email: formData.get("email"),
@@ -29,12 +29,14 @@ export const actions: Actions = {
         ).toString(),
       },
     });
-    if (error)
+    if (error) {
+      console.error("Supabase sign-up failed:", error);
       return fail(400, {
         message:
           "Could not create your account. Check the details and try again.",
         email,
       });
+    }
     if (data.session) redirect(303, "/app");
     return { message: "Check your email for a confirmation link.", email };
   },
@@ -47,8 +49,13 @@ export const actions: Actions = {
       provider: "google",
       options: { redirectTo },
     });
-    if (error || !data.url)
+    if (error || !data.url) {
+      console.error(
+        "Supabase Google sign-up failed:",
+        error ?? "No OAuth URL returned.",
+      );
       return fail(500, { message: "Google sign-up could not be started." });
+    }
     redirect(303, data.url);
   },
 };

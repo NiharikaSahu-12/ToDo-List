@@ -34,7 +34,7 @@
       </div>
       {#if form?.message}<p class="form-message" role="alert">{form.message}</p>{/if}
 
-      <form method="POST" use:enhance class="auth-form">
+      <form method="POST" action="?/login" use:enhance class="auth-form">
         <label for="email">Email address</label>
         <input id="email" name="email" type="email" autocomplete="email" required value={form?.email ?? ''} placeholder="you@example.com" />
         <label for="password">Password</label>

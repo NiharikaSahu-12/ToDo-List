@@ -26,7 +26,13 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.safeGetSession = async () => {
     const {
       data: { session },
+      error: sessionError,
     } = await event.locals.supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error("Supabase session lookup failed:", sessionError);
+      return { session: null, user: null };
+    }
 
     if (!session) {
       return { session: null, user: null };
@@ -38,6 +44,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     } = await event.locals.supabase.auth.getUser();
 
     if (error) {
+      console.error("Supabase user verification failed:", error);
       return { session: null, user: null };
     }
 

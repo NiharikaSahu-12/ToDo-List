@@ -28,7 +28,7 @@
         <p>One small step toward a more organized day.</p>
       </div>
       {#if form?.message}<p class:success={form.message.startsWith('Check your email')} class="form-message" role="status">{form.message}</p>{/if}
-      <form method="POST" use:enhance class="auth-form">
+      <form method="POST" action="?/signup" use:enhance class="auth-form">
         <label for="email">Email address</label>
         <input id="email" name="email" type="email" autocomplete="email" required value={form?.email ?? ''} placeholder="you@example.com" />
         <label for="password">Password</label>
